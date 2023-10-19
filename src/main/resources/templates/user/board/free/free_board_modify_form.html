@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{user/include/head_header_footer.html::head}">
+
+
+<body>
+
+<script th:src="@{/js/user/free_board_js.js}" type="text/javascript"></script>
+<header th:replace="~{user/include/head_header_footer.html::header}"></header>
+
+<style>
+    .ck-editor__editable { height: 250px; }
+</style>
+
+<section>
+        <div class="w-25 bg-danger p-1 mt-4 mx-auto text-center text-light" style="border-radius: 5px;">
+            <span style="font-size: 24px; white-space: nowrap;">실종/목격 글 수정 페이지</span>
+        </div>
+        <div class="container w-50 px-lg-5 mt-4">
+            <form th:action="@{/user/board/free_board_modify_confirm}" name="free_board_modify_confirm" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="fb_no" th:value="${freeBoardUserDto.fb_no}">
+                <select class="form-select form-select-sm mb-3" name="fb_category" th:value="${freeBoardUserDto.fb_category}">
+                    <option th:selected="${freeBoardUserDto.fb_category} == '0'" value="0">-- 실종/목격 선택하시오 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_category} == '1'" value="1">-- 실종 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_category} == '2'" value="2">-- 목격 --</option>
+                </select>
+                <input class="w-100 p-2 mb-3 border border-secondarys" style="border-radius: 3px;" type="text" name="fb_title" th:value="${freeBoardUserDto.fb_title}"><br>
+
+                <select class="form-select form-select-sm" name="fb_region" th:value="${freeBoardUserDto.fb_region}">
+                    <option th:selected="${freeBoardUserDto.fb_region} == '0'" value="0" >-- 지역을 선택하시오 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '서울특별시'" value="서울특별시" >-- 서울특별시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '부산광역시'" value="부산광역시" >-- 부산광역시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '대구광역시'" value="대구광역시" >-- 대구광역시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '인천광역시'" value="인천광역시" >-- 인천광역시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '광주광역시'" value="광주광역시" >-- 광주광역시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '세종특별자치시'" value="세종특별자치시" >-- 세종특별자치시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '대전광역시'" value="대전광역시" >-- 대전광역시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '울산광역시'" value="울산광역시" >-- 울산광역시 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '경기도'" value="경기도" >-- 경기도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '강원특별자치도'" value="강원특별자치도" >-- 강원특별자치도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '충청북도'" value=충청북도 >-- 충청북도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '충청남도'" value="충청남도" >-- 충청남도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '전라북도'" value="전라북도" >-- 전라북도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '전라남도'" value="전라남도" >-- 전라남도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '경상북도'" value="경상북도" >-- 경상북도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '경상남도'" value="경상남도" >-- 경상남도 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_region} == '제주특별자치도'" value="제주특별자치도" >-- 제주특별자치도 --</option>
+                </select><br>
+                품종 : <input class="form-control-sm mb-1" type="text" name="fb_kind" th:value="${freeBoardUserDto.fb_kind}">
+                색상 : <input class="form-control-sm mb-1" type="text" name="fb_color" th:value="${freeBoardUserDto.fb_color}"><br>
+                나이 : <input class="form-control-sm mb-3" type="text" name="fb_age" th:value="${freeBoardUserDto.fb_age}">
+                체중 : <input class="form-control-sm mb-3" type="text" name="fb_weight" th:value="${freeBoardUserDto.fb_weight}"><br>
+                <select class="form-select form-select-sm mb-1" name="fb_gender" th:value="${freeBoardUserDto.fb_gender}">
+                    <option th:selected="${freeBoardUserDto.fb_gender} == '0'" value="0" >-- 성별 선택 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_gender} == 'M'" value="M" >-- 수컷 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_gender} == 'W'" value="F" >-- 암컷 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_gender} == 'Q'" value="Q" >-- 미상 --</option>
+                </select><br>
+                <select class="form-select form-select-sm mb-1" name="fb_neuter" th:value="${freeBoardUserDto.fb_neuter}">
+                    <option th:selected="${freeBoardUserDto.fb_neuter} == '0'" value="0" >-- 중성화 여부 --</option>
+                    <option th:selected="${freeBoardUserDto.fb_neuter} == 'Y'" value="Y" >-- 중성화 O --</option>
+                    <option th:selected="${freeBoardUserDto.fb_neuter} == 'N'" value="N" >-- 중성화 X --</option>
+                    <option th:selected="${freeBoardUserDto.fb_neuter} == 'U'" value="U" >-- 미상 --</option>
+                </select><br>
+                <textarea id="editor" name="fb_content" ></textarea><br>
+                <div class="mb-3">
+                    <h3>이미지 업로드</h3>
+                        업로드 되었던 파일 : <span th:text="${freeBoardUserDto.fb_image}"></span>
+                        <input class="form-control mb-3" type="file" name="file" id="formFile">
+                </div>
+                <input class="btn btn-outline-danger mb-3" id="submitBtn" type="button" value="수정">&nbsp;&nbsp;
+                <input class="btn btn-outline-danger ms-3 mb-3" type="button" value="취소" onclick="cancelButton();">
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<footer th:replace="~{user/include/head_header_footer.html::footer}"></footer>
+
+<!-- CKEditor -->
+<script>
+
+    let ckEditor;
+    ClassicEditor.create(document.querySelector('#editor'),{
+        language: "ko",
+        ckfinder : {
+            uploadUrl: "/image/upload"
+        }
+    }).then(editor => {
+        ckEditor = editor;
+        ckEditor.setData('[(${freeBoardUserDto.fb_content})]');
+        $('#submitBtn').click(function() {
+            modifyConfirm(editor);
+        });
+    })
+</script>
+
+</body>
+</html>

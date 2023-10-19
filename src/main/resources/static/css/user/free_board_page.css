@@ -1,0 +1,36 @@
+section div.page_wrap {
+    width: 98%;
+    margin: 0 auto 50px;
+    text-align: center;
+}
+
+section div.page_number {
+    display: inline-block;
+}
+
+section div.page_number a {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 3px;
+    color: #3c3c3c;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+section div.page_number a:hover {
+    background-color: #e3e6e8;
+}
+
+section div.page_number a.selectedPageNum {
+    color: #fff;
+    font-weight: bolder;
+    border: 1px solid #CB444A;
+    border-radius: 5px;
+    background-color: #CB444A;
+}
+
+/* page UI END */

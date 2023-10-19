@@ -1,0 +1,269 @@
+<script th:fragment="js" type="text/javascript">
+    $(document).ready(function () {
+        console.log("DOUCMENT READY!!");
+
+        init_events();
+
+    });
+
+    // DB와의 비동기 통신을 위한 ajax를 이용한 코드
+    function init_events() {
+        console.log('init_events() CALLED!!');
+
+        // 보호소 이름 조회
+        $(document).on('keyup', '#autocomplete_input_s_name', function (e) {
+            console.log('autocomplete_input_s_name CHANGED HANDLER!!');
+
+
+            let word = $(this).val();
+            console.log('word: ' + word);
+
+            // 보호소명 태그쪽의 word 유무에 따라 글자 보이게 함
+            if (word == '') {
+                $('#section_wrap .create_account_form div:nth-child(4)').css('display', 'none');
+            } else {
+                $('#section_wrap .create_account_form div:nth-child(4)').css('display', 'block');
+                ajax_searchShelterName(word);
+            }
+
+            // 검색한 보호소 이름 클릭 시
+            $(document).on('click', '#section_wrap .create_account_form .shelter_search_name ul li a', function (e) {
+
+                let selectedValue = $(this).text();  // 클릭한 <a> 요소의 텍스트 값 가져오기
+                $('#autocomplete_input_s_name').val(selectedValue);  // <input> 요소에 값을 설정하기
+
+                $('#section_wrap .create_account_form .shelter_search_name ul').children().remove();
+
+            });
+
+        });
+
+        // 보호소 고유번호 조회
+        $(document).on('keyup', '#autocomplete_input_s_no', function (e) {
+            console.log('autocomplete_input_s_no CHANGED HANDLER!!');
+
+            let word = $(this).val();
+
+            // 보호소 고유번호 태그 쪽의 word 유무에 따라 글자 보이게 함
+            if (word == '') {
+                $('#section_wrap .create_account_form div:nth-child(6)').css('display', 'none');
+            } else {
+                $('#section_wrap .create_account_form div:nth-child(6)').css('display', 'block');
+                ajax_searchShelterNo(word);
+            }
+
+            // 리스트에 나온 데이터를 클릭 시 나머지 리스트 모두 제거하고 값이 input태그에 들어가도록 함
+            $(document).on('click', '#section_wrap .create_account_form .shelter_search_no ul li a', function (e) {
+                e.preventDefault();
+
+                let selectedValue = $(this).text();
+                $('#autocomplete_input_s_no').val(selectedValue);
+
+                $('#section_wrap .create_account_form .shelter_search_no ul').children().remove();
+
+            });
+
+        });
+
+
+        // 보호소 주소 조회
+        $(document).on('keyup', '#autocomplete_input_s_address', function (e) {
+            console.log('autocomplete_input_s_address CHANGED HANDLER!!');
+
+            let word = $(this).val();
+
+            // 보호소 주소 태그 쪽의 word 유무에 따라 글자 보이게 함
+            if (word == '') {
+                $('#section_wrap .create_account_form div:nth-child(8)').css('display', 'none');
+            } else {
+                $('#section_wrap .create_account_form div:nth-child(8)').css('display', 'block');
+                ajax_searchShelterAddress(word);
+            }
+
+            $(document).on('click', '#section_wrap .create_account_form .shelter_search_address ul li a', function (e) {
+
+                let selectedValue = $(this).text();
+                $('#autocomplete_input_s_address').val(selectedValue);
+
+
+                $('#section_wrap .create_account_form .shelter_search_address ul').children().remove();
+
+            });
+
+        });
+
+
+        // 보호소 전화번호 조회
+        $(document).on('keyup', '#autocomplete_input_s_phone', function (e) {
+            console.log('autocomplete_input_s_phone CHANGED HANDLER!!');
+
+            let word = $(this).val();
+
+            // 보호소 전화번호 태그 쪽의 word 유무에 따라 글자 보이게 함
+            if (word == '') {
+                $('#section_wrap .create_account_form div:nth-child(10)').css('display', 'none');
+            } else {
+                $('#section_wrap .create_account_form div:nth-child(10)').css('display', 'block');
+                ajax_searchShelterPhone(word);
+            }
+
+            $(document).on('click', '#section_wrap .create_account_form .shelter_search_phone ul li a', function (e) {
+
+                let selectedValue = $(this).text();
+                $('#autocomplete_input_s_phone').val(selectedValue);
+
+                $('#section_wrap .create_account_form .shelter_search_phone ul').children().remove();
+
+            });
+
+        });
+
+    };
+
+    // 보호소명 비동기 통신
+    function ajax_searchShelterName(word) {
+        console.log('ajax_searchShelterName() CALLED!!');
+
+        let formData = new FormData();
+        formData.append("word", word);
+
+        // formData 형식으로 한 이유 -> JSON형식으로 하면 SpringSecurityConfig에서 DB와 주고 받을 수 없도록 막음
+        $.ajax({
+            url: '/admin/member/searchShelterName',
+            method: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (data) {
+                console.log("AJAX SUCCESS - ajax_searchShelterName()");
+
+                let shelterSearchDtos = data.shelterSearchDtos;
+                $('#section_wrap .create_account_form ul').children().remove();
+                //  remove 시키는 이유 -> 새로 불러올 때마다 지우고 다시 목록에 뿌려줘야하기 때문에.
+                for (let i = 0; i < shelterSearchDtos.length; i++) {
+                    let appendTag = "<li>";
+                    appendTag += "<a href='#none'>" + shelterSearchDtos[i].s_name + "</a>";
+                    appendTag += "</li>";
+
+                    $('#section_wrap .create_account_form .shelter_search_name ul').append(appendTag);
+                }
+
+            },
+            error: function (data) {
+                console.log("AJAX ERROR - ajax_searchShelterName()");
+            }
+
+        })
+    };
+
+    // 보호소 고유번호 비동기 통신
+    function ajax_searchShelterNo(word) {
+        console.log('ajax_searchShelterNo() CALLED!!');
+
+        let formData = new FormData();
+        formData.append("word", word);
+        console.log(formData.get("word"));
+
+
+        $.ajax({
+            url: '/admin/member/searchShelterNo',
+            method: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (data) {
+                console.log("AJAX SUCCESS - ajax_searchShelterNo()");
+
+                let shelterSearchDtos = data.shelterSearchDtos;
+                $('#section_wrap .create_account_form ul').children().remove();
+
+                for (let i = 0; i < shelterSearchDtos.length; i++) {
+                    let appendTag = "<li>";
+                    appendTag += "<a href='#none'>" + shelterSearchDtos[i].s_no + "</a>";
+                    appendTag += "</li>";
+
+                    $('#section_wrap .create_account_form .shelter_search_no ul').append(appendTag);
+                }
+
+            },
+            error: function (data) {
+                console.log("AJAX ERROR - ajax_searchShelterNo()");
+            }
+
+        })
+    };
+
+    // 보호소 주소 비동기 통신
+    function ajax_searchShelterAddress(word) {
+        console.log('ajax_searchShelterAddress() CALLED!!');
+
+        let formData = new FormData();
+        formData.append("word", word);
+        console.log(formData.get("word"));
+
+
+        $.ajax({
+            url: '/admin/member/searchShelterAddress',
+            method: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (data) {
+                console.log("AJAX SUCCESS - ajax_searchShelterAddress()");
+
+                let shelterSearchDtos = data.shelterSearchDtos;
+                $('#section_wrap .create_account_form ul').children().remove();
+
+                for (let i = 0; i < shelterSearchDtos.length; i++) {
+                    let appendTag = "<li>";
+                    appendTag += "<a href='#none'>" + shelterSearchDtos[i].s_address + "</a>";
+                    appendTag += "</li>";
+
+                    $('#section_wrap .create_account_form .shelter_search_address ul').append(appendTag);
+                }
+
+            },
+            error: function (data) {
+                console.log("AJAX ERROR - ajax_searchShelterAddress()");
+            }
+
+        })
+    };
+
+    // 보호소 전화번호 비동기 통신
+    function ajax_searchShelterPhone(word) {
+        console.log('ajax_searchShelterPhone() CALLED!!');
+
+        let formData = new FormData();
+        formData.append("word", word);
+        console.log(formData.get("word"));
+
+        $.ajax({
+            url: '/admin/member/searchShelterPhone',
+            method: 'POST',
+
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (data) {
+                console.log("AJAX SUCCESS - ajax_searchShelterPhone()");
+
+                let shelterSearchDtos = data.shelterSearchDtos;
+                $('#section_wrap .create_account_form ul').children().remove();
+
+                for (let i = 0; i < shelterSearchDtos.length; i++) {
+                    let appendTag = "<li>";
+                    appendTag += "<a href='#none'>" + shelterSearchDtos[i].s_phone + "</a>";
+                    appendTag += "</li>";
+
+                    $('#section_wrap .create_account_form .shelter_search_phone ul').append(appendTag);
+                }
+
+            },
+            error: function (data) {
+                console.log("AJAX ERROR - ajax_searchShelterPhone()");
+            }
+
+        })
+    };
+</script>

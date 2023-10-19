@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="~{user/include/head_header_footer.html::head}">
+</head>
+<body>
+
+<header th:replace="~{user/include/head_header_footer.html::header}">
+</header>
+
+<section>
+    <div id="section_wrap">
+        <div class="mx-auto text-center m-4" style="max-width: 800px;">
+            <span th:text="${u_m_id}" style="font-size: 24px; white-space: nowrap;"></span>
+            <span style="font-size: 18px; white-space: nowrap;">님 환영합니다! 계정 생성에 성공하셨습니다!</span> <br/>
+            <span style="font-size: 18px; white-space: nowrap;">이제 로그인을 하신 후 더 많은 서비스를 이용하실 수 있어요!</span> <br/><br/>
+            <a th:href="@{/user/member/member_login_form}" style="text-decoration: none;">지금 로그인하러 가기</a>
+        </div>
+
+        <div class="mx-auto" style="max-width: 800px;">
+            <img th:src="@{/img/create_account_success.png}" class="d-block w-100" alt="temp3" style="max-height: 950px;">
+        </div>
+
+    </div>
+</section>
+
+<footer th:replace="~{user/include/head_header_footer.html::footer}">
+</footer>
+
+</body>
+</html>

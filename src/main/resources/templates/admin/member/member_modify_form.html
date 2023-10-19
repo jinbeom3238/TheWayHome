@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{admin/include/admin_head_header_footer.html::head}">
+    <link rel="stylesheet" th:href="@{/css/admin/common.css}">
+</head>
+
+<body>
+
+<script th:src="@{/js/admin/member_js.js}"></script>
+<script th:src="@{/js/admin/member_delete_confirm.js}"></script>
+
+    <header th:replace="~{/admin/include/admin_head_header_footer.html::header}">
+    </header>
+
+    <section>
+        <div id="section_wrap">
+
+            <div th:fragment="content" class="container mx-auto m-5" style="width: 500px;">
+
+                    <div class="form-group w-35 p-3 mt-3 mx-auto text-center">
+                        <span style="font-size: 24px; white-space: nowrap;">회원정보 수정</span>
+                    </div>
+
+            <div class="member_modify_form">
+                <form th:action="@{/admin/member/member_modify_confirm}" name="member_modify_form" method="post">
+                    <input type="hidden" name="a_m_no" th:if="${session.loginedAdminMemberDto != null}" th:value="${session.loginedAdminMemberDto.a_m_no}">
+                    <div class="form-floating mb-3">
+                    <input type="text" name="a_m_id" class="form-control" id="floatingId" th:if="${session.loginedAdminMemberDto != null}" th:value="${session.loginedAdminMemberDto.a_m_id}" readonly>
+                        <label for="floatingId">ID</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" name="a_m_pw" value="******" class="form-control" id="floatingPassword" readonly disabled>
+                        <label for="floatingPassword">Password</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="s_no" th:if="${session.loginedAdminMemberDto != null}" th:value="${session.loginedAdminMemberDto.s_no}" class="form-control" id="floatingSNo" readonly="readonly" disabled="disabled">
+                        <label for="floatingSNo">고유번호</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="s_name" th:if="${session.loginedAdminMemberDto != null}" th:value="${session.loginedAdminMemberDto.s_name}" class="form-control" id="floatingSName"  readonly="readonly" disabled="disabled">
+                        <label for="floatingSName">name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="s_address" th:if="${session.loginedAdminMemberDto != null}" th:value="${session.loginedAdminMemberDto.s_address}" class="form-control" id="floatingSAddress"  readonly="readonly" disabled="disabled">
+                        <label for="floatingSAddress">Address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" name="s_phone" th:if="${session.loginedAdminMemberDto != null}" th:value="${session.loginedAdminMemberDto.s_phone}" class="form-control" id="floatingSPhone"  >
+                        <label for="floatingSPhone">Phone</label>
+                    </div>
+                    <div class="text-center mb-4">
+                        <input type="button" value="회원정보 수정" class="btn btn-dark" style="width:40%" th:onclick="memberModifyForm()">
+                        <input type="button" value="비밀번호 변경" class="btn btn-dark" style="width:40%" th:onclick="|location.href='@{/admin/member/admin_password_modify_form}'|">
+                    </div>
+                </form>
+            </div>
+            </div>
+
+            <div class="text-center m-5">
+            <div class="go_delete_confirm">
+                <div class="btn btn-gray" id="delete" th:attr="onclick=|deleteConfirm(event)|">회원탈퇴</div>
+            </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer th:replace="~{/admin/include/admin_head_header_footer.html::footer}">
+    </footer>
+</body>
+</html>

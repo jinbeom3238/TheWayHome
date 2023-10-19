@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="~{user/include/head_header_footer.html::head}">
+
+</head>
+<body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:src="@{/js/user/review_board_js.js}" type="text/javascript"></script>
+
+<style>
+    .ck-editor__editable { height: 400px; }
+</style>
+
+<header th:replace="~{user/include/head_header_footer.html::header}">
+</header>
+
+<section>
+    <div class="w-25 bg-success p-1 mt-4 mx-auto text-center text-light" style="border-radius: 5px;">
+        <span style="font-size: 24px; font-weight: bold">후기 게시글 작성</span>
+    </div>
+
+    <div class="container w-50 px-lg-5 mt-4">
+        <form th:action="@{/user/board/write_review_confirm}" name="write_review_form" method="post" enctype="multipart/form-data">
+            <div class="mb-0"><input class="w-100 p-2 border border-secondarys" type="text" name="r_b_title" placeholder="제목을 작성하세요." style="border-radius: 3px;"></div> <br/>
+            <textarea name="r_b_content" id="editor"></textarea> <br/>
+            <input type="file" name="file">
+            <div class="d-flex justify-content-end mb-4">
+                <input class="btn btn-outline-success" type="button" value="작성" id="submitBtn">
+                <input class="btn btn-outline-success ms-3" type="button" value="취소" onclick="cancelButton();">
+            </div>
+        </form>
+    </div>
+
+</section>
+
+<footer th:replace="~{user/include/head_header_footer.html::footer}">
+</footer>
+
+<script>
+
+    ClassicEditor.create(document.querySelector('#editor'),{
+        language: "ko",
+        ckfinder : {
+            uploadUrl: "/image/upload"
+        }
+    }).then(editor=>{
+        $('#submitBtn').click(function() {
+            writeReviewConfirm(editor);
+        });
+    })
+
+</script>
+
+</body>
+</html>

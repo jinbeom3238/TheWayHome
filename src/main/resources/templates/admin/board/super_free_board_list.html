@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{user/include/head_header_footer.html::head}">
+
+<body>
+<link type="text/css" rel="stylesheet" th:href="@{/css/user/free_board_page.css}">
+<script th:replace="~{/admin/include/super_free_board_list_pagenation_js.html::js}" type="text/javascript"></script>
+<header th:replace="~{/admin/include/admin_head_header_footer.html::header}"></header>
+
+<section>
+
+    <div class="w-25 bg-danger p-3 mt-5 mx-auto text-center text-light" style="border-radius: 5px;">
+        <span style="font-size: 24px; font-weight: bold">실종/목격 게시판</span>
+    </div>
+
+    <div class="container px-lg-5 mt-2">
+
+        <div class="navbar navbar-light bg-light m-3">
+            <div class="container-fluid">
+                    <a class="btn btn-outline-danger navbar-brand" th:href="@{/user/board/free_board_form}" role="button">글쓰기</a>
+                <div class="d-flex">
+                    <select>
+                        <option>제목</option>
+                        <option>품종</option>
+                        <option>지역</option>
+                    </select>
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-danger" type="submit">Search</button>
+                </div>
+            </div>
+        </div>
+
+<!--        <div class="row">-->
+<!--            <div class="col-6">-->
+<!--                <span class="m-3">-->
+<!--                    <a class="btn btn-outline-danger ms-3 mb-3" th:href="@{/user/board/free_board_form}" role="button">글쓰기</a>-->
+<!--                </span>-->
+<!--            </div>-->
+<!--            <div class="col-6">-->
+<!--                <select>-->
+<!--                    <option value="0">실종/목격</option>-->
+<!--                </select>-->
+<!--                <select>-->
+<!--                    <option value="0">축종</option>-->
+<!--                </select>-->
+<!--                <select>-->
+<!--                    <option value="0">품종</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+
+
+        <!-- Page Features-->
+        <div th:if="${freeBoardUserDtos == null}">
+            현재 게시글이 없습니다.
+        </div>
+
+        <div class="row gx-lg-5" th:if="${freeBoardUserDtos != null}">
+            <div class="col-lg-6 col-xxl-4 mb-5" th:each="freeBoardUserDto : ${freeBoardUserDtos}">
+                <div class="card bg-danger-subtle border-0 h-100">
+                    <div class="card-body p-2 p-lg-5 pt-0 pt-lg-0">
+                        <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"><i class="bi bi-collection"></i></div>
+                        <a th:if="${freeBoardUserDto.fb_image != 'noImage'}" th:href="@{/admin/free/board/super_free_board_detail(fb_no=${freeBoardUserDto.fb_no})}">
+                            <img th:src="@{'/UploadImg/' + ${freeBoardUserDto.fb_image}}" alt="img" class="d-block w-100 h-100 mb-4" style="max-height: 200px; object-fit: cover;">
+                        </a>
+                        <a th:unless="${freeBoardUserDto.fb_image != 'noImage'}" th:href="@{/admin/free/board/super_free_board_detail(fb_no=${freeBoardUserDto.fb_no})}">
+                            <img th:src="@{/img/no_img.png}" alt="img" class="d-block w-100 h-100 mb-4" style="max-height: 200px; object-fit: cover;">
+                        </a>
+                        <a href="#none" class="text-dark" style="text-decoration: none;">
+                            <h3 class="fs-4 fw-bold" th:text="${freeBoardUserDto.fb_title}"></h3>
+                        </a>
+                        <div class="mb-4">
+                            <img th:src="@{/img/user.png}">
+                            <span class="mr-0" style="text-align: center;" th:text="${freeBoardUserDto.u_m_id}"></span>
+                            <br/>
+                            <img th:src="@{/img/eye.png}">
+                            <span class="mb-0" style="text-align: center;" th:text="${freeBoardUserDto.fb_hits}"></span>
+
+                            <img th:src="@{/img/calendar-days.png}">
+                            <span class="mb-1" style="text-align: center;" th:text="${freeBoardUserDto.fb_reg_date}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGENATION START -->
+    <div class="w-25 p-3 mb-5 mx-auto text-center">
+
+        <div class="mx-auto m5">
+            <div class="page_number">
+
+            </div>
+        </div>
+
+    </div>
+    <!-- PAGENATION END -->
+
+</section>
+
+
+<footer th:replace="~{admin/include/admin_head_header_footer.html::footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+    $(document).ready(function() {
+        console.log('READY!!');
+
+        setPage();
+
+        init_main_event();
+
+    });
+
+    function setPage() {
+        console.log('setPage() CALLED!!');
+
+        let pageMakerDto = [[${pageMakerDto}]];
+
+        /* PAGE UI */
+        $('div.page_number').children().remove();
+
+        // 이전 페이지
+        if (pageMakerDto.prev) {
+            $('div.page_number').append('<a href="#none" data-pagenum="' + (pageMakerDto.startPage - 1) + '">&#60;</a>');
+        }
+
+        // 처음 페이지
+        if (pageMakerDto.criteria.pageNum > 10) {
+            $('div.page_number').append('<a href="#none" data-pagenum="1">1</a><span>...</span>');
+        }
+
+        // 페이지 넘버링
+        for (let p = parseInt(pageMakerDto.startPage); p <= parseInt(pageMakerDto.endPage); p++) {
+            $('div.page_number').append('<a href="#none" data-pagenum="' + p + '">' + p + '</a>');
+        }
+
+        // 페이지 하이라이트
+        $('div.page_number a[data-pagenum=' + pageMakerDto.criteria.pageNum + ']').addClass('selectedPageNum');
+
+        // 다음 페이지
+        if (pageMakerDto.next) {
+            $('div.page_number').append('<a href="#none" data-pagenum="' + (pageMakerDto.endPage + 1) + '">&#62;</a>');
+        }
+
+        // 전체 페이지
+        $('#span.page_total_num').text(pageMakerDto.totalPage);
+
+    }
+
+    function init_main_event() {
+        console.log('init_main_event() CALLED!!');
+
+        // 페이지 번호 클릭 시
+        $(document).on('click', 'div.page_number a', function() {
+            console.log('page number CLICK HANDLER');
+
+            let pageNum = $(this).data('pagenum');
+
+            location.href = '/admin/review/board/super_review_board_list?pageNum=' + pageNum;
+
+        });
+
+    }
+</script>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="~{user/include/head_header_footer.html::head}">
+
+</head>
+<body>
+
+<header th:replace="~{user/include/head_header_footer.html::header}">
+</header>
+
+<section>
+
+    <div id="section_wrap">
+        <div id="carouselExampleCaptions" class="carousel slide mx-auto" style="max-width: 1200px;">
+
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <a th:href="@{/user/pets/all_pets_list}"><img th:src="@{/img/pets_list.png}" class="d-block w-100 h-100" alt="pets_list" style="max-height: 550px; object-fit: cover;"></a>
+                </div>
+                <div class="carousel-item">
+                    <a th:href="@{/user/board}"><img th:src="@{/img/free_board.png}" class="d-block w-100 h-100" alt="free_board" style="max-height: 550px; object-fit: cover;"></a>
+                </div>
+                <div class="carousel-item">
+                    <a th:href="@{/user/board/review_board}"> <img th:src="@{/img/review_board.png}" class="d-block w-100 h-100" alt="review_board" style="max-height: 550px; object-fit: cover;"></a>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+
+        </div>
+    </div>
+
+</section>
+
+<footer th:replace="~{user/include/head_header_footer.html::footer}">
+</footer>
+
+</body>
+</html>

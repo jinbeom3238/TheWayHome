@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.btc.thewayhome.user.board.free.IFreeBoardUserDaoMapper">
+
+    <insert id="insertFreeBoardContent"
+            parameterType="com.btc.thewayhome.user.board.free.FreeBoardUserDto">
+
+        INSERT INTO
+            tbl_free_board(u_m_id, fb_category, fb_title, fb_content, fb_image, fb_region, fb_kind, fb_color, fb_age, fb_weight, fb_gender, fb_neuter, fb_reg_date, fb_mod_date)
+        VALUES
+            (#{u_m_id}, #{fb_category}, #{fb_title}, #{fb_content}, #{fb_image}, #{fb_region}, #{fb_kind}, #{fb_color}, #{fb_age}, #{fb_weight}, #{fb_gender}, #{fb_neuter}, NOW(),NOW())
+    </insert>
+
+<!--    <select id="selectAllFreeBoard" resultType="hashmap">-->
+<!--        SELECT-->
+<!--            *-->
+<!--        FROM-->
+<!--            tbl_free_board-->
+<!--        WHERE-->
+<!--            use_yn = 'Y'-->
+<!--        ORDER BY-->
+<!--            fb_no DESC-->
+<!--            LIMIT-->
+<!--            #{skip}, #{amount}-->
+<!--    </select>-->
+
+    <select id="selectAllFreeBoard" resultType="hashmap">
+            <choose>
+                <when test="searchInput eq null">
+                    SELECT
+                        *
+                    FROM
+                        tbl_free_board
+                    WHERE
+                        use_yn = 'Y'
+                    ORDER BY
+                        fb_no DESC
+                    LIMIT
+                        #{skip}, #{amount}
+                </when>
+                <otherwise>
+                    <choose>
+                        <when test="searchOption eq '0'.toString()">
+                            SELECT
+                                *
+                            FROM
+                                tbl_free_board
+                            WHERE
+                                use_yn = 'Y'
+                            AND
+                                fb_title like concat('%', #{searchInput}  ,'%')
+                            ORDER BY
+                                fb_no DESC
+                            LIMIT
+                                #{skip}, #{amount}
+                        </when>
+                        <when test="searchOption eq '1'.toString()">
+                            SELECT
+                                *
+                            FROM
+                                tbl_free_board
+                            WHERE
+                                use_yn = 'Y'
+                            AND
+                                fb_kind like concat('%', #{searchInput}  ,'%')
+                            ORDER BY
+                                fb_no DESC
+                            LIMIT
+                                #{skip}, #{amount}
+                        </when>
+                        <when test="searchOption eq '2'.toString()">
+                            SELECT
+                                *
+                            FROM
+                                tbl_free_board
+                            WHERE
+                                use_yn = 'Y'
+                            AND
+                                fb_region like concat('%', #{searchInput}  ,'%')
+                            ORDER BY
+                                fb_no DESC
+                            LIMIT
+                                #{skip}, #{amount}
+                        </when>
+                    </choose>
+                </otherwise>
+            </choose>
+        </select>
+
+        <!--후기 게시판 - 게시글 개수-->
+    <select id="getTotalCnt" resultType="Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_free_board
+        WHERE
+            use_yn = "Y"
+    </select>
+
+    <update id="updateHits" parameterType="Integer">
+        UPDATE
+            tbl_free_board
+        SET
+            fb_hits = fb_hits + 1
+        WHERE
+            fb_no = #{fb_no}
+        AND
+            use_yn = 'Y'
+
+    </update>
+
+    <select id="selectContent"
+            parameterType="com.btc.thewayhome.user.board.free.FreeBoardUserDto"
+            resultType="com.btc.thewayhome.user.board.free.FreeBoardUserDto">
+        SELECT
+            *
+        FROM
+            tbl_free_board
+        WHERE
+            fb_no = #{fb_no}
+        AND
+            use_yn = 'Y'
+    </select>
+
+    <update id="deleteFreeBoard"
+            parameterType="Integer" >
+        UPDATE
+            tbl_free_board
+        SET
+            use_yn = 'N'
+        WHERE
+            fb_no = #{fb_no}
+
+    </update>
+
+    <select id="selectImageByImageId"
+            parameterType="Long"
+            resultType="String">
+
+        SELECT
+            fb_image
+        FROM
+            tbl_free_board
+        WHERE
+            fb_image = #{fb_image}
+        AND
+            use_yn = 'Y'
+
+
+    </select>
+
+    <update id="updateFreeboard"
+            parameterType="com.btc.thewayhome.user.board.free.FreeBoardUserDto">
+        UPDATE
+            tbl_free_board
+        SET
+            fb_category = #{fb_category},
+            fb_title = #{fb_title},
+            fb_content = #{fb_content},
+            fb_region = #{fb_region},
+            fb_kind = #{fb_kind},
+            fb_color = #{fb_color},
+            fb_age = #{fb_age},
+            fb_weight = #{fb_weight},
+            fb_gender = #{fb_gender},
+            fb_neuter = #{fb_neuter},
+            fb_mod_date = NOW()
+        WHERE
+            fb_no = #{fb_no}
+
+
+    </update>
+
+
+
+</mapper>

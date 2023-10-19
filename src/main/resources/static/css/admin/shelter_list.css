@@ -1,0 +1,73 @@
+/* Custom styles that override Bootstrap styles */
+
+/* Set a background color */
+body {
+    background-color: #f0f0f0;
+}
+
+/* Header styles */
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+}
+
+/* Section styles */
+section {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Title styles */
+.word {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Search box styles */
+#search_box {
+    margin-top: 20px;
+}
+
+/* Select styles */
+select[name="area"] {
+    width: 150px;
+    padding: 5px;
+}
+
+/* Shelter list table styles */
+#shelter_list table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+#shelter_list th {
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+    text-align: left;
+}
+
+#shelter_list td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Links in the table */
+#shelter_list a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+#shelter_list a:hover {
+    text-decoration: underline;
+}
+
+/* Footer styles */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}

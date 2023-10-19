@@ -1,0 +1,183 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+    $(document).ready(function() {
+        console.log('READY!!');
+
+        commentBtn();
+        ajax_comment_list();
+
+    });
+
+    function commentBtn() {
+        $(document).on('click', 'input[value="작성"]', function () {
+            console.log('commentBtn CLICK HANDLER!!');
+            let form = document.write_comment_form;
+            if (form.b_c_content.value == '') {
+                alert('댓글을 작성해주세요.');
+                form.b_c_content.focus();
+
+            } else {
+                let u_m_id = $('input[name="u_m_id"]').val();
+                let b_type = $('input[name="b_type"]').val();
+                let b_no = $('input[name="b_no"]').val();
+                let b_c_content = $('input[name="b_c_content"]').val();
+                ajax_comment_confirm(u_m_id, b_type, b_no, b_c_content);
+            }
+        });
+    }
+
+    function commentList(data) {
+        console.log('commentList()');
+
+        $('#comment_list').html('');
+        let append="";
+        let loginedUser = [[${session.loginedUserMemberDto}]];
+
+        for(let i = 0; i < data.length; i++) {
+            append+='<div class=\"container w-100 px-lg-5 mt-3 mb-3\">';
+            append+='<div class=\"row d-flex justify-content-center\">';
+            append+='<div class=\"card p-3\">';
+            append+='<div class=\"d-flex justify-content-between align-items-center\">';
+            append+='<div class=\"user d-flex flex-row align-items-center\">';
+            append+='<span class=\"font-weight-bold\">' + data[i].u_m_id + '</span> &nbsp;&nbsp;';
+            append+='<span>' + data[i].b_c_content + '</span>';
+            append+='</div>';
+            if(loginedUser != null && loginedUser.u_m_id  == data[i].u_m_id) {
+                append += '<small><a id="commentDeleteBtn" class="text-dark" style="text-decoration: none;" onclick="deleteReply(' + data[i].b_c_no + ')">삭제</a></small>';
+
+            }
+            append+='</div>';
+            append+='<div class="action d-flex justify-content-between mt-2 align-items-center">';
+            append+='<div class="reply">';
+            append+='<small>' + data[i].b_c_reg_date + '</small>';
+            append+='</div>';
+            append+='</div>';
+            append+='</div>';
+            append+='</div>';
+            append+='</div>';
+            append+='</div>';
+
+        }
+
+        $('#comment_list').html(append);
+        $('#comment_input').val('');
+    }
+
+    /*ajax START*/
+    function ajax_comment_confirm(u_m_id, b_type, b_no, b_c_content) {
+        console.log('ajax_comment_confirm() CALLED!!');
+
+        let msgDto = {
+            'u_m_id': u_m_id,
+            'b_type': b_type,
+            'b_no': b_no,
+            'b_c_content': b_c_content,
+        };
+
+        $.ajax({
+            url: "/user/comment/write_free_board_comment_confirm",
+            type: 'POST',
+            data: JSON.stringify(msgDto),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_comment_confirm()');
+                if (data != null) {
+                    console.log('댓글 작성 완료');
+
+
+                } else {
+                    alert('댓글 작성 실패!');
+
+                }
+
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_comment_confirm()');
+                alert('댓글 통신 실패!');
+
+            },
+            complete : function (data){
+                ajax_comment_list();
+            }
+        });
+
+    }
+
+    function ajax_comment_list() {
+        console.log('ajax_comment_list() CALLED!!');
+
+        const url = new URL( window.location.href );
+        const params = url.searchParams;
+
+        $.ajax({
+            url: "/user/comment/free_board_detail_json?fb_no="+params.get("fb_no"),
+            type: 'GET',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_comment_list()');
+                if (data != null) {
+                    console.log('댓글 출력 완료!');
+                    console.log(JSON.stringify(data));
+                    console.log(data);
+                    commentList(data);
+
+                } else {
+                    alert('댓글 출력 실패!');
+                }
+
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_comment_list()');
+                alert('댓글 통신 실패!');
+
+            }
+        });
+
+    }
+
+    function deleteReply(b_c_no){
+
+        var delComment = confirm("댓글 삭제 하시겠습니까?");
+        if(delComment) {
+
+
+            var jsonData = { // Body에 첨부할 json 데이터
+                "b_c_no": b_c_no,
+            };
+
+            $.ajax({
+                url: "/user/comment/free_board_comment_delete",
+                type: 'POST',
+                data: JSON.stringify(jsonData),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    console.log('AJAX SUCCESS - ajax_comment_confirm()');
+                    if (data != null) {
+                        console.log('댓글 삭제 완료');
+
+                    } else {
+                        alert('댓글 삭제 실패!');
+
+                    }
+
+                },
+                error: function (data) {
+                    console.log('AJAX ERROR - ajax_comment_confirm()');
+                    alert('댓글 통신 실패!');
+
+                },
+                complete: function (data) {
+                    ajax_comment_list();
+
+                }
+            });
+        } else {
+            alert('삭제가 취소되었습니다.');
+        }
+
+    }
+
+</script>

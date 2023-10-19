@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{user/include/head_header_footer.html::head}">
+</head>
+<body>
+
+    <script th:src="@{/js/user/member_js.js}" type="text/javascript"></script>
+
+    <header th:replace="~{user/include/head_header_footer.html::header}">
+    </header>
+
+    <section>
+        <div id="section_wrap">
+
+            <div th:fragment="content" class="container mx-auto m-5" style="width: 500px;  border: 1px solid #ccc; border-radius: 15px;">
+                <div class="form-group w-35 p-3 mt-3 mx-auto text-center">
+                    <span style="font-size: 24px; white-space: nowrap;">사용자 회원가입</span>
+                </div>
+                <form th:action="@{/user/member/create_account_confirm}" name="create_account_form" method="post">
+                    <div class="form-group w-75 p-3 mx-auto">
+                        <div class="form-floating mb-3">
+                            <input type="text" name="u_m_id" class="form-control" id="floatingInput" placeholder="Id">
+                            <label for="floatingInput">ID</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" name="u_m_pw" class="form-control" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword">Password</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" name="u_m_pw_again" class="form-control" id="floatingPasswordAgain" placeholder="PasswordAgain">
+                            <label for="floatingPasswordAgain">PasswordConfirm</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" name="u_m_name" class="form-control" id="floatingName" placeholder="Name">
+                            <label for="floatingName">Name</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="email" name="u_m_mail" class="form-control" id="floatingMail" placeholder="Email">
+                            <label for="floatingMail">E-mail (ex: ex@ex.com)</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="text" name="u_m_phone" class="form-control" id="floatingPhone" placeholder="PhoneNumber">
+                            <label for="floatingPhone">Phone Number (ex: 010-xxxx-xxxx)</label>
+                        </div>
+                        <div class="text-center mb-4">
+                            <input type="button" class="btn btn-primary" value="계정생성" onclick="createAccountForm();"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="text-center m-5">
+                <a th:href="@{/user/member/member_login_form}" style="text-decoration: none;">이미 계정이 있으신가요? 로그인</a>
+            </div>
+        </div>
+    </section>
+
+    <footer th:replace="~{user/include/head_header_footer.html::footer}">
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.btc.thewayhome.user.member.IUserMemberDaoMapper">
+
+    <!--아이디 중복 검사-->
+    <select id="isMember" parameterType="String" resultType="Boolean">
+
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_member_user
+        WHERE u_m_id = #{u_m_id}
+
+    </select>
+
+    <!--회원가입 유저 정보 입력-->
+    <insert id="insertUserMember" parameterType="com.btc.thewayhome.user.member.UserMemberDto" >
+
+        INSERT INTO
+            tbl_member_user(u_m_id, u_m_pw, u_m_name, u_m_phone, u_m_mail, u_m_reg_date, u_m_mod_date)
+        VALUES
+            (#{u_m_id}, #{u_m_pw}, #{u_m_name}, #{u_m_phone}, #{u_m_mail}, NOW(),NOW())
+
+
+    </insert>
+
+    <!--로그인-->
+    <select id="selectUserForLogin"
+            parameterType="com.btc.thewayhome.user.member.UserMemberDto"
+            resultType="com.btc.thewayhome.user.member.UserMemberDto">
+        SELECT
+            *
+        FROM
+            tbl_member_user
+        WHERE
+            u_m_id = #{u_m_id}
+        AND
+            use_yn = 'Y'
+    </select>
+
+    <!--회원 정보 수정-->
+    <update id="updateUserMember" parameterType="com.btc.thewayhome.user.member.UserMemberDto">
+
+        UPDATE
+            tbl_member_user
+        SET
+            u_m_name = #{u_m_name},
+            u_m_mail = #{u_m_mail},
+            u_m_phone = #{u_m_phone},
+            u_m_mod_date = NOW()
+        WHERE
+            u_m_no = #{u_m_no}
+    </update>
+
+    <!--비밀 번호 변경-->
+    <update id="updateUserMemberPassword" parameterType="com.btc.thewayhome.user.member.UserMemberDto">
+
+UPDATE
+            tbl_member_user
+        SET
+            u_m_pw = #{u_m_pw},
+            u_m_mod_date = NOW()
+        WHERE
+            u_m_no = #{u_m_no}
+
+    </update>
+
+    <!--회원 정보 최신화-->
+    <select id="getLatestMemberInfo"
+            parameterType="com.btc.thewayhome.user.member.UserMemberDto"
+            resultType="com.btc.thewayhome.user.member.UserMemberDto">
+        SELECT
+            *
+        FROM
+            tbl_member_user
+        WHERE
+            u_m_no = #{u_m_no}
+    </select>
+
+    <!--계정 삭제-->
+    <update id="deleteUserMember" parameterType="Integer">
+
+        UPDATE
+            tbl_member_user
+        SET
+            use_yn = 'N',
+            u_m_mod_date = NOW()
+        WHERE
+            u_m_no = #{u_m_no}
+    </update>
+
+</mapper>

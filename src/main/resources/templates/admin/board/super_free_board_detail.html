@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{user/include/head_header_footer.html::head}">
+
+<body>
+
+<header th:replace="~{admin/include/admin_head_header_footer.html::header}"></header>
+<script th:src="@{/js/admin/super_free_board_delete_js.js}" type="text/javascript"></script>
+
+<link rel="stylesheet" th:href="@{/css/user/free_board_write.css}">
+
+<section>
+
+    <div class="container w-100 px-lg-5 mt-4">
+
+        <!--본문-->
+        <div class="w-100 m-2 mx-auto text-center border border-danger rounded">
+
+            <!--제목-->
+            <div class="w-100 p-2 mt-4 d-flex justify-content-first">
+                <span th:text="${freeBoardDetailDto.fb_title}" style="font-size: 20px; font-weight: bold"></span>
+            </div>
+
+            <!--작성자, 작성일-->
+            <div class="p-2 d-flex justify-content-between align-items-center border-bottom">
+                <span th:text="${freeBoardDetailDto.u_m_id}"></span> &nbsp;
+                <span th:text="${freeBoardDetailDto.fb_reg_date}" class="text-secondary"></span>
+            </div>
+
+            <!--사진-->
+            <div th:if="${freeBoardDetailDto.fb_image != 'noImage'}" class="m-4">
+                <img th:src="@{'/UploadImg/' + ${freeBoardDetailDto.fb_image}}" alt="img" class="d-block mx-auto mb-4" style="max-width: 600px;">
+            </div>
+            <!--실종/목격 동물정보-->
+
+            품종   : <span th:text="${freeBoardDetailDto.fb_kind}" />&nbsp;/
+            성별   : <span th:text="${freeBoardDetailDto.fb_gender}" />&nbsp;/
+            중성화 : <span th:text="${freeBoardDetailDto.fb_neuter}" />&nbsp;/
+            나이   : <span th:text="${freeBoardDetailDto.fb_age}" />&nbsp;/
+            몸무게 : <span th:text="${freeBoardDetailDto.fb_weight}" /> kg
+            지역   : <span th:text="${freeBoardDetailDto.fb_region}" />
+
+            <!--내용-->
+            <div class="m-5">
+                <span th:utext="${freeBoardDetailDto.fb_content}"></span>
+            </div>
+        </div>
+
+        <div class="w-100 d-flex justify-content-end mt-3">
+            <!--해당 게시글이 로그인 중인 자신의 게시글인 경우에만 나타나는 수정 버튼-->
+
+            <div th:if="${session.loginedAdminMemberDto != null && session.loginedAdminMemberDto.a_m_approval == '2' }">
+<!--                <a class="btn btn-outline-danger ms-3" th:href="@{/user/board/free_board_modify_form(fb_no=${freeBoardDetailDto.fb_no})}" style="text-decoration: none;">수정</a>-->
+                <a class="btn btn-outline-danger ms-3" style="text-decoration: none;" th:attr="onclick=|superDeleteFreeBoardConfirm('${freeBoardDetailDto.fb_no}')|">삭제</a>
+            </div>
+
+            <input class="btn btn-outline-danger ms-3" type="button" value="목록" onclick="cancelButton();">
+        </div>
+    </div>
+
+    <!--댓글-->
+    <div class="container w-100 px-lg-5 mt-4" th:if="${session.loginedAdminMemberDto != null}">
+        <form th:action="@{/user/board/write_comment_confirm}" name="write_review_form" method="post">
+            <div class="mb-0"><input class="w-100 p-5 border border-secondarys rounded" type="text" name="r_b_title" placeholder="댓글을 작성하세요."></div>
+            <div class="d-flex justify-content-end mt-3 mb-3">
+                <input class="btn btn-outline-danger" type="button" value="작성" id="submitBtn">
+            </div>
+        </form>
+    </div>
+    <div class="container w-100 px-lg-5 mt-4" th:unless="${session.loginedAdminMemberDto != null}">
+        <div class="mb-0"><input class="w-100 p-5 border border-secondarys rounded" disabled readonly placeholder="로그인 후 댓글을 작성할 수 있습니다."></div>
+        <div class="d-flex justify-content-end mt-3 mb-3">
+            <a class="btn btn-outline-danger" th:href="@{/user/member/member_login_form}">작성</a>
+        </div>
+    </div>
+
+</section>
+
+<footer th:replace="~{admin/include/admin_head_header_footer.html::footer}"></footer>
+
+<!-- CKEditor -->
+<script>
+    ClassicEditor.create(document.querySelector('#editor'),{
+        language: "ko",
+        ckfinder : {
+            uploadUrl: "/image/upload"
+        }
+    }).then(editor =>{
+        $('#submitBtn').click(function() {
+            writePost(editor);
+        });
+    })
+</script>
+
+</body>
+</html>

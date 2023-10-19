@@ -1,0 +1,27 @@
+<script th:fragment="js" type="text/javascript">
+    $(document).ready(function () {
+        console.log("DOUCMENT READY!!");
+
+        init_events();
+
+    });
+
+    function init_events() {
+        console.log('init_events() CALLED!!');
+
+        $(document).ready(function() {
+            const now = new Date();
+
+            // 날짜와 시간을 밀리초 단위로 변환합니다.
+            const milliseconds = now.getTime();
+
+            // 밀리초를 정수로 변환합니다.
+            const randomValue = parseInt(milliseconds, 10);
+
+            // 생성된 정수를 hidden input 요소에 설정합니다.
+            $('#an_no').val(randomValue);
+        });
+
+    };
+
+</script>

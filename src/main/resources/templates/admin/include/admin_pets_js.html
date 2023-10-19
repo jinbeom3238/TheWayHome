@@ -1,0 +1,148 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+    $(document).ready(function () {
+        console.log("DOCUMENT READY!!");
+
+        init_event();
+
+    });
+
+    function init_event() {
+        //보호동물 삭제
+        $(document).on('click', '#go_delete_pets_confirm', function(e) {
+            console.log('button CLICK HANDLER!!');
+            let className = $(this).data("no")
+
+            let result = confirm('정말 삭제하시겠습니까?');
+
+            if (result)
+                ajax_delete_pets_confirm(className);
+        });
+
+        /*$(document).on('click', '#go_delete_pets_confirm', function(e) {
+            console.log("button CLICK HANDLER");
+
+            let result = confirm('정말 삭제하시겠습니까?');
+
+            let className = $(this).data("no")
+
+            if (result)
+                ajax_delete_pets_confirm(className);
+
+        });*/
+
+
+
+    // }
+    /*function init_event() {
+        $('#go_delete_pets_confirm').click(function () {
+            console.log('button CLICK HANDLER!!');
+
+            confirm('상태를 변경하시겠습니까?')
+
+            let an_no = $(this).parent().attr('id');
+            ajax_delete_pets_confirm(an_no);
+
+        });*/
+    }
+
+    /*
+     * AJAX START
+     */
+    //pets delete ajax
+   /* function ajax_delete_pets_confirm(an_no) {
+    console.log('ajax_delete_pets_confirm() CALLED!!');
+
+    let msg = {
+        'an_no': [[${dto}]].an_no,
+    };
+    $.ajax({
+        url:			'/admin/pets/pet_delete_confirm',
+        type:			'POST',
+        data: 			JSON.stringify(msg),
+        contentType:	'application/json; chartset=utf-8;',
+        dataType:		'json',
+        success: function(data) {
+            console.log('AJAX SUCCESS - ajax_delete_pets_confirm()');
+
+            if (data.result >= 1) {
+                alert('삭제가 완료되었습니다.');
+                // location.href = "/admin";
+            }
+
+        },
+        error: function(data) {
+            console.log('AJAX ERROR - ajax_delete_pets_confirm()');
+            alert('삭제가 완료되지 않았습니다. 다시 시도해주세요.');
+
+        }
+    });
+    }*/
+    function ajax_delete_pets_confirm(className) {
+        console.log('ajax_delete_pets_confirm() CALLED!!');
+
+        let formdata = new FormData();
+        formdata.append("className", className);
+        $.ajax({
+            url:			'/admin/pets/pet_delete_confirm',
+            type:			'GET',
+            processData: false,
+            contentType: false,
+            data: formdata,
+            success: function(data) {
+                console.log('AJAX SUCCESS - ajax_delete_pets_confirm()');
+
+                if (data.result >= 0) {
+                    alert('삭제가 완료되었습니다.');
+                }
+
+            },
+            error: function(data) {
+                console.log('AJAX ERROR - ajax_delete_pets_confirm()');
+                alert('삭제가 완료되지 않았습니다. 다시 시도해주세요.');
+
+            }
+        });
+    }
+
+/*    function ajax_delete_pets_confirm(className) {
+        console.log('ajax_delete_pets_confirm() CALLED!!');
+
+        let formdata = new FormData();
+        formdata.append("an_no", className);
+
+        $.ajax({
+            url:			'/admin/pets/pet_delete_confirm',
+            type:			'POST',
+            processData: false,
+            contentType: false,
+            data: formdata,
+            success: function(data) {
+                console.log('AJAX SUCCESS - ajax_delete_pets_confirm()');
+
+                if (data.result == 0) {
+                    $('div.btn_delete a.delete').text("승인대기");
+                    $('div.btn_delete div.delete')
+                        .css("background-color", "#6c757d")
+                        .css("color", "#6c757d");
+                } else {
+                    $("#" + an_no + ' div.btn_delete a.delete').text("승인완료");
+                    $("#" + an_no + ' div.btn_delete a.delete')
+                        .css("background-color", "#28a745")
+                        .css("color", "#fff");
+                }
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_approval_confirm()');
+                alert('문제가 발생했습니다. 다시 시도해주세요.');
+            }
+        });
+    }*/
+
+
+
+    /*
+     * AJAX END
+     */
+
+</script>

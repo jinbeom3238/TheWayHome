@@ -1,0 +1,67 @@
+<script th:fragment="js" th:inline="javascript">
+
+    $(document).ready(function() {
+        console.log('READY');
+
+        login_click_event();
+
+    });
+
+    function login_click_event() {
+        console.log('login_click_event()');
+        //로그인
+        $(document).on('click', '#section_wrap input[value="로그인"]', function (e) {
+            console.log('user login button click handler');
+
+            let form = document.member_login_form;
+            if (form.u_m_id.value == '') {
+                alert('아이디를 입력하세요.');
+                form.u_m_id.focus();
+
+            } else if (form.u_m_pw.value == '') {
+                alert('비밀번호를 입력하세요.');
+                form.u_m_pw.focus();
+
+            } else {
+                let u_m_id = $('#section_wrap input[name="u_m_id"]').val();
+                let u_m_pw = $('#section_wrap input[name="u_m_pw"]').val();
+                ajax_login_confirm(u_m_id, u_m_pw);
+
+            }
+
+        })
+    }
+
+    // AJAX START
+
+    //로그인 ajax
+    function ajax_login_confirm(u_m_id, u_m_pw) {
+        console.log('ajax_login_confirm() CALLED!!');
+
+        let formData = new FormData();
+        formData.append("u_m_id", u_m_id);
+        formData.append("u_m_pw", u_m_pw);
+
+        $.ajax({
+            url: '/user/member/member_login_confirm',
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function(data) {
+                console.log('AJAX SUCCESS - ajax_login_confirm()');
+
+                location.href = "/";
+
+            },
+            error: function(data) {
+                console.log('>>>>>>>>>>>>> ', data);
+                console.log('AJAX ERROR - ajax_login_confirm()');
+                alert('앗! 로그인에 문제가 발생했습니다. \n입력한 정보가 정확한지 다시 한 번 확인해주세요.');
+                location.href = "/user/member/member_login_form"
+            }
+        });
+
+    }
+
+</script>

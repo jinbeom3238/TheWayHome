@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.btc.thewayhome.admin.board.review.IReviewBoardAdminDaoMapper">
+
+<!--  후기 게시글 페이지 네이션  -->
+    <select id="selectAllReviewBoard" resultType="hashmap">
+        SELECT
+            *
+        FROM
+            tbl_review_board
+        WHERE
+            use_yn = 'Y'
+        ORDER BY
+            r_b_no DESC
+            LIMIT
+            #{skip}, #{amount}
+    </select>
+
+<!--  후기 게시글 총 페이지수 알기  -->
+    <select id="getTotalCnt" resultType="Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_review_board
+        WHERE
+            use_yn = 'Y'
+    </select>
+
+<!--  후기 게시글 상세페이지  -->
+    <select id="selectReviewDetail" parameterType="Integer" resultType="com.btc.thewayhome.user.board.review.ReviewBoardUserDto">
+        SELECT
+            *
+        FROM
+            tbl_review_board
+        WHERE
+            r_b_no = #{r_b_no}
+    </select>
+
+    <!--    super 관리자가 후기 게시글 삭제 -->
+    <update id="deleteReviewBoard"
+            parameterType="Integer" >
+        UPDATE
+            tbl_review_board
+        SET
+            use_yn = 'N'
+        WHERE
+            r_b_no = #{r_b_no}
+
+    </update>
+
+
+
+
+
+</mapper>

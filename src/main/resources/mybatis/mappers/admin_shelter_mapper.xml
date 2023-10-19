@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.btc.thewayhome.admin.pets.admin.IPetsAdminDaoMapper">
+
+
+    <!--들어오는 유기동물 번호와 DB에 있는  유기동물 번호 중복체크-->
+    <select id="isPetsNumInfo"
+            parameterType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto"
+            resultType="boolean">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_animal_api
+        WHERE
+            an_no=#{an_no}
+    </select>
+
+
+    <!-- pet API DB에 삽입 -->
+    <insert id="insertPetsInfo"
+            parameterType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        INSERT INTO tbl_animal_api(an_no,
+                                   an_thumbnail,
+                                   an_happen_date,
+                                   an_happen_place,
+                                   an_an_kind,
+                                   an_k_kind,
+                                   an_color,
+                                   an_age,
+                                   an_weight,
+                                   an_n_start,
+                                   an_n_end,
+                                   an_image,
+                                   an_p_s_state,
+                                   an_g_gender,
+                                   an_ne_neuter,
+                                   an_special_mark,
+                                   s_name,
+                                   s_phone,
+                                   s_address,
+                                   an_reg_date,
+                                   an_mod_date)
+
+
+        VALUES (#{an_no},
+                #{an_thumbnail},
+                #{an_happen_date},
+                #{an_happen_place},
+                #{an_an_kind},
+                #{an_k_kind},
+                #{an_color},
+                #{an_age},
+                #{an_weight},
+                #{an_n_start},
+                #{an_n_end},
+                #{an_image},
+                #{an_p_s_state},
+                #{an_g_gender},
+                #{an_ne_neuter},
+                #{an_special_mark},
+                #{s_name},
+                #{s_phone},
+                #{s_address},
+                NOW(),
+                NOW()
+               )
+    </insert>
+
+    <!-- admin 보호소가 보호 동물을 DB에 직접 등록 -->
+    <insert id="registPets"
+            parameterType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        INSERT INTO tbl_animal_api(an_no,
+                                   an_thumbnail,
+                                   an_happen_date,
+                                   an_happen_place,
+                                   an_an_kind,
+                                   an_k_kind,
+                                   an_color,
+                                   an_age,
+                                   an_weight,
+                                   an_n_start,
+                                   an_n_end,
+                                   an_image,
+                                   an_p_s_state,
+                                   an_g_gender,
+                                   an_ne_neuter,
+                                   an_special_mark,
+                                   s_name,
+                                   s_phone,
+                                   s_address,
+                                   an_reg_date,
+                                   an_mod_date)
+
+
+        VALUES (#{an_no},
+                #{an_thumbnail},
+                #{an_happen_date},
+                #{an_happen_place},
+                #{an_an_kind},
+                #{an_k_kind},
+                #{an_color},
+                #{an_age},
+                #{an_weight},
+                #{an_n_start},
+                #{an_n_end},
+                #{an_image},
+                #{an_p_s_state},
+                #{an_g_gender},
+                #{an_ne_neuter},
+                #{an_special_mark},
+                #{s_name},
+                #{s_phone},
+                #{s_address},
+                NOW(),
+                NOW()
+               )
+    </insert>
+
+    <!-- 보호 동물 수정시 수정전 데이터를 불러오기 위함 -->
+    <select id="selectPetsForModify" parameterType="String" resultType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        SELECT
+            *
+        FROM
+            tbl_animal_api
+        WHERE
+            an_no=#{an_no}
+
+    </select>
+
+    <!--  보호동물 수정   -->
+    <update id="updatePets" parameterType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        UPDATE tbl_animal_api
+        SET
+        <if test="an_thumbnail  != null">
+            an_thumbnail = #{an_thumbnail},
+        </if>
+        an_happen_date = #{an_happen_date},
+        an_happen_place = #{an_happen_place},
+        an_an_kind = #{an_an_kind},
+        an_k_kind = #{an_k_kind},
+        an_color = #{an_color},
+        an_age = #{an_age},
+        an_weight = #{an_weight},
+        an_n_start = #{an_n_start},
+        an_n_end = #{an_n_end},
+        <if test="an_image  != null">
+            an_image = #{an_image},
+        </if>
+        an_p_s_state = #{an_p_s_state},
+        an_g_gender = #{an_g_gender},
+        an_ne_neuter = #{an_ne_neuter},
+        an_special_mark = #{an_special_mark},
+        an_mod_date = NOW()
+        WHERE an_no = #{an_no}
+
+    </update>
+
+    <!-- 보호소 리스트 - 관리자가 조회하는 페이지 -->
+    <!--<select id="selectShelter"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="com.btc.thewayhome.admin.pets.admin.AdminShelterListInfoDto">
+        SELECT
+            n.s_no,
+            n.s_name,
+            i.s_address,
+            i.s_phone,
+            i.s_reg_date
+        FROM
+            tbl_shelter_num n
+        INNER JOIN
+            tbl_shelter_info i
+        ON
+            n.s_name = i.s_name
+        WHERE
+            s_no = #{s_no}
+        ORDER BY
+             s_reg_date desc;
+    </select>-->
+
+    <select id="selectShelter"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="com.btc.thewayhome.admin.pets.admin.AdminShelterListInfoDto">
+        SELECT
+            s_no,
+            s_name,
+            s_address,
+            s_phone,
+            a_m_reg_date
+        FROM
+            tbl_member_admin
+        WHERE
+            s_no = #{s_no}
+        ORDER BY
+            s_name ASC
+    </select>
+
+    <!-- 보호소 리스트 - super가 조회하는 페이지 -->
+    <!--<select id="selectShelterSuper"
+            parameterType="com.btc.thewayhome.admin.pets.admin.AdminShelterListInfoDto"
+            resultType="com.btc.thewayhome.admin.pets.admin.AdminShelterListInfoDto">
+        SELECT
+            n.s_no,
+            n.s_name,
+            i.s_address,
+            i.s_phone,
+            i.s_reg_date
+        FROM
+                tbl_shelter_num n
+            INNER JOIN
+                tbl_shelter_info i
+            ON
+                n.s_name = i.s_name
+    </select> -->
+
+    <!--보호소 리스트 - super가 조회하는 페이지 -->
+    <select id="selectShelterSuper"
+            parameterType="com.btc.thewayhome.admin.pets.admin.AdminShelterListInfoDto"
+            resultType="com.btc.thewayhome.admin.pets.admin.AdminShelterListInfoDto">
+        /*SELECT
+            n.s_no,
+            n.s_name,
+            i.s_address,
+            i.s_phone,
+            i.s_reg_date,
+            a.a_m_approval
+        FROM
+            tbl_member_admin a
+                JOIN
+                    tbl_shelter_num n
+                ON
+                    a.s_no = n.s_no
+                JOIN
+                    tbl_shelter_info i
+                ON
+                n.s_name = i.s_name
+        WHERE
+            a_m_approval = '1'*/
+        SELECT
+            s_no,
+            s_name,
+            s_address,
+            s_phone,
+            a_m_reg_date
+        FROM
+            tbl_member_admin
+        WHERE
+            a_m_approval = '1'
+
+    </select>
+
+    <!-- 보호소 리스트 - 일반 admin 검사 -->
+    <select id="isAdminMemberBasic"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="boolean">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_member_admin
+        WHERE
+            a_m_id = #{a_m_id}
+          AND
+            a_m_approval = '1'
+    </select>
+
+    <!-- 보호소 리스트 - SUPER 검사 -->
+    <select id="isAdminMemberSuper"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="boolean">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_member_admin
+        WHERE
+            a_m_approval = '2'
+    </select>
+
+    <!-- 보호 동물 리스트 - 보호소 리스트에서 보호동물 리스트 불러오기 -->
+    <!--   <select id="selectPets"
+                parameterType="String"
+                resultType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+            SELECT
+                an.an_no,
+                an.use_yn,
+                an.an_thumbnail,
+                ad.s_no,
+                an.s_name,
+                an.an_k_kind,
+                an.an_n_start,
+                an.an_n_end,
+                an.an_p_s_state
+            FROM
+                tbl_animal_api AS an
+                Inner JOIN
+                    tbl_member_admin AS ad
+                ON
+                    an.s_name = ad.s_name
+            WHERE
+                ad.s_no = #{s_no} and an.use_yn='Y'
+            AND
+                an.use_yn = 'Y'
+        </select>-->
+
+    <select id="selectPets"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        <choose>
+            <when test="searchInput == null or searchInput.equals('')">
+                SELECT
+                api.an_no,
+                api.use_yn,
+                api.an_thumbnail,
+                ad.s_no,
+                api.s_name,
+                api.an_an_kind,
+                api.an_k_kind,
+                api.an_n_start,
+                api.an_n_end,
+                api.an_p_s_state
+                FROM
+                tbl_animal_api AS api
+                JOIN
+                tbl_member_admin AS ad
+                ON
+                api.s_name = ad.s_name
+                WHERE
+                ad.s_no = #{s_no} AND api.use_yn='Y'
+                ORDER BY
+                api.an_n_end ASC;
+            </when>
+            <otherwise>
+                <choose>
+                    <when test="searchOption eq '0'.toString()">
+                        SELECT
+                        api.an_no,
+                        api.use_yn,
+                        api.an_thumbnail,
+                        ad.s_no,
+                        api.s_name,
+                        api.an_an_kind,
+                        api.an_k_kind,
+                        api.an_n_start,
+                        api.an_n_end,
+                        api.an_p_s_state
+                        FROM
+                        tbl_animal_api AS api
+                        JOIN
+                        tbl_member_admin AS ad
+                        ON
+                        api.s_name = ad.s_name
+                        WHERE
+                        api.an_an_kind like concat('%',#{searchInput},'%')
+                        AND
+                        ad.s_no = #{s_no}
+                        AND
+                        api.use_yn='Y'
+                    </when>
+                    <otherwise>
+                        SELECT
+                        api.an_no,
+                        api.use_yn,
+                        api.an_thumbnail,
+                        ad.s_no,
+                        api.s_name,
+                        api.an_an_kind,
+                        api.an_k_kind,
+                        api.an_n_start,
+                        api.an_n_end,
+                        api.an_p_s_state
+                        FROM
+                        tbl_animal_api AS api
+                        JOIN
+                        tbl_member_admin AS ad
+                        ON
+                        api.s_name = ad.s_name
+                        WHERE
+                        api.an_k_kind like concat('%',#{searchInput},'%')
+                        AND
+                        ad.s_no = #{s_no}
+                        AND
+                        api.use_yn='Y'
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 보호 동물 리스트 - 메뉴바에서 보호동물 리스트 눌렀을 때 보호동물 불러오기 -->
+    <select id="selectAllPets"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        SELECT
+            a.an_no,
+            a.use_yn,
+            a.an_thumbnail,
+            sn.s_no,
+            a.s_name,
+            a.an_an_kind,
+            a.an_k_kind,
+            a.an_n_start,
+            a.an_n_end,
+            a.an_p_s_state
+        FROM
+            tbl_animal_api AS a
+                JOIN
+            tbl_shelter_num AS sn
+            ON
+                a.s_name = sn.s_name
+        WHERE
+            sn.s_no= ${s_no} AND use_yn = 'Y'
+        ORDER BY
+            a.an_n_end ASC;
+    </select>
+
+    <!--보호 동물 리스트 - 보호동물 리스트 눌렀을 때 보호동물 불러오기(super) -->
+    <select id="selectAllPetsSuper"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        SELECT
+            a.an_no,
+            a.use_yn,
+            a.an_thumbnail,
+            sn.s_no,
+            a.s_name,
+            a.an_an_kind,
+            a.an_k_kind,
+            a.an_n_start,
+            a.an_n_end,
+            a.an_p_s_state
+        FROM
+            tbl_animal_api AS a
+                JOIN
+            tbl_shelter_num AS sn
+            ON
+                a.s_name = sn.s_name AND use_yn = 'Y'
+        ORDER BY
+            a.an_n_end ASC;
+    </select>
+
+    <!-- 보호 동물 상세 페이지 -->
+    <select id="selectPetsListDetail"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.pets.admin.PetsAdminDto">
+        SELECT
+            an_no,
+            an_image,
+            an_g_gender,
+            an_color,
+            an_age,
+            an_weight,
+            an_an_kind,
+            an_k_kind,
+            an_n_start,
+            an_n_end,
+            an_happen_place,
+            an_special_mark,
+            s_name
+        FROM
+            tbl_animal_api
+        WHERE
+            an_no = #{an_no}
+    </select>
+
+    <!--보호 동물 삭제-->
+    <update id="deletePetsConfirm"
+            parameterType="String">
+        UPDATE
+            tbl_animal_api
+        SET
+            use_yn = 'N',
+            an_mod_date = NOW()
+        WHERE
+            an_no = #{an_no}
+    </update>
+
+</mapper>

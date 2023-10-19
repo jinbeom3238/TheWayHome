@@ -1,0 +1,12 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+var useConSole = true;
+
+if(!useConSole) {
+	console = {}
+	console.log = function(){};
+	console.warn = function(){};
+	console.error = function(){};
+}
+
+</script>

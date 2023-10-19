@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.btc.thewayhome.admin.member.IAdminMemberDaoMapper">
+
+<!--들어오는 보호소 명과 DB에 있는 보호소명 중복체크-->
+    <select id="isShelterNameForNum"
+            parameterType="com.btc.thewayhome.admin.member.ShelterInfoDto"
+            resultType="boolean">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_shelter_num
+        WHERE
+            s_name=#{s_name}
+    </select>
+
+    <!--보호소 번호, 이름 DB에 삽입-->
+    <insert id="insertShelterNum"
+            parameterType="com.btc.thewayhome.admin.member.ShelterNumDto">
+        INSERT INTO
+            tbl_shelter_num(s_no, s_name)
+        VALUES
+            (#{s_no}, #{s_name})
+    </insert>
+
+<!-- 보호소 이름 중복체크  -->
+    <select id="isShelterNameForInfo"
+            parameterType="com.btc.thewayhome.admin.member.ShelterInfoDto"
+            resultType="boolean">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_shelter_info
+        WHERE
+            s_name=#{s_name}
+    </select>
+
+    <!--보호소 이름, 전화번호, 주소 DB에 삽입-->
+    <insert id="insertShelterInfo"
+            parameterType="com.btc.thewayhome.admin.member.ShelterInfoDto">
+        INSERT INTO
+            tbl_shelter_info(s_name, s_phone, s_address, s_reg_date, s_mod_date)
+        VALUES
+            (#{s_name}, #{s_phone}, #{s_address}, NOW(), NOW())
+    </insert>
+
+    <!-- 회원가입시 DB에 있는 보호소 이름 출력  -->
+    <select id="selectSearchShelterName"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.member.ShelterSearchDto">
+        SELECT
+            s_name
+        FROM
+            tbl_shelter_num
+        WHERE
+            s_name
+                LIKE CONCAT('%', #{ShelterName}, '%')
+        ORDER BY s_name ASC
+
+    </select>
+
+    <!-- 회원가입시 DB에 있는 보호소 번호 출력  -->
+    <select id="selectSearchShelterNo"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.member.ShelterSearchDto">
+        SELECT
+            s_no
+        FROM
+            tbl_shelter_num
+        WHERE
+            s_no
+                LIKE CONCAT('%', #{ShelterNo}, '%')
+        ORDER BY s_no ASC
+
+    </select>
+
+    <!-- 회원가입시 DB에 있는 보호소 주소 출력  -->
+    <select id="selectSearchShelterAddress"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.member.ShelterSearchDto">
+        SELECT
+            s_address
+        FROM
+            tbl_shelter_info
+        WHERE
+            s_address
+                LIKE CONCAT('%', #{ShelterAddress}, '%')
+        ORDER BY s_address ASC
+
+    </select>
+
+    <!-- 회원가입시 DB에 있는 보호소 전화번호 출력  -->
+    <select id="selectSearchShelterPhone"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.member.ShelterSearchDto">
+        SELECT
+            s_phone
+        FROM
+            tbl_shelter_info
+        WHERE
+            s_phone
+                LIKE CONCAT('%', #{ShelterPhone}, '%')
+        ORDER BY s_phone ASC
+    </select>
+
+    <!-- 회원가입 시 ID와 보호소 번호로 중복 체크   -->
+    <select id="isAdmin"
+            parameterType="java.util.Map"
+            resultType="boolean">
+        SELECT
+            COUNT(*)
+        FROM
+            tbl_member_admin
+        WHERE
+            a_m_id = #{a_m_id}
+          OR
+            s_no = #{s_no}
+    </select>
+
+    <!-- admin 회원가입 하기  -->
+    <insert id="insertNewAccount"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto" >
+        INSERT INTO
+            tbl_member_admin(a_m_id, a_m_pw, s_no, s_name, s_address, s_phone, a_m_reg_date, a_m_mod_date)
+        VALUES
+            (#{a_m_id}, #{a_m_pw}, #{s_no}, #{s_name}, #{s_address}, #{s_phone}, NOW(), NOW())
+    </insert>
+
+    <!-- admin 로그인 -->
+    <select id="selectAdminForLogin"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="com.btc.thewayhome.admin.member.AdminMemberDto">
+        SELECT
+            *
+        FROM
+            tbl_member_admin
+        WHERE
+            a_m_id = #{a_m_id}
+          AND
+            (a_m_approval = '1' OR a_m_approval = '2')
+          AND
+            use_yn = 'Y'
+    </select>
+
+    <!-- admin 정보 수정 -->
+    <update id="updateAccount"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto">
+        UPDATE
+            tbl_member_admin
+        SET
+            s_phone = #{s_phone},
+            a_m_mod_date = NOW()
+        WHERE
+            a_m_no = #{a_m_no}
+    </update>
+
+    <!-- admin 정보 수정 - 최신화 -->
+    <select id="getLatestAccountInfo"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto"
+            resultType="com.btc.thewayhome.admin.member.AdminMemberDto">
+        SELECT
+            *
+        FROM
+            tbl_member_admin
+        WHERE
+            a_m_no = #{a_m_no}
+    </select>
+
+    <!--비밀 번호 변경-->
+    <update id="updateAdminMemberPassword"
+            parameterType="com.btc.thewayhome.admin.member.AdminMemberDto">
+
+        UPDATE
+            tbl_member_admin
+        SET
+            a_m_pw = #{a_m_pw},
+            a_m_mod_date = NOW()
+        WHERE
+            a_m_no = #{a_m_no}
+
+    </update>
+
+    <!-- admin 탈퇴 -->
+    <update id="deleteAdmin"
+            parameterType="Integer">
+        UPDATE
+            tbl_member_admin
+        SET
+            use_yn = 'N',
+            a_m_approval = '0',
+            a_m_mod_date = NOW()
+        where
+            a_m_no = #{a_m_no}
+    </update>
+
+    <!-- admin 정보 리스트 -->
+    <select id="selectAdminForApproval"
+            resultType="com.btc.thewayhome.admin.member.AdminMemberDto">
+        SELECT
+            *
+        FROM
+            tbl_member_admin
+    </select>
+
+    <!-- admin 승인 처리 -->
+    <update id="updateAdminForApporoval" parameterType="Integer">
+        UPDATE tbl_member_admin
+        SET
+            a_m_approval = CASE
+                               WHEN a_m_approval = '1' THEN '0'
+                               WHEN a_m_approval = '0' THEN '1'
+                            END,
+            a_m_mod_date = NOW()
+        WHERE
+            a_m_no = #{a_m_no}
+        AND
+            use_yn = 'Y'
+    </update>
+
+    <!-- admin 승인 처리 - a_m_approval 값을 받기 위함 -->
+    <select id="selectAdminForApprovalFromNo"
+            parameterType="Integer"
+            resultType="String">
+
+        SELECT
+            a_m_approval
+        FROM
+            tbl_member_admin
+        WHERE
+            a_m_no = #{a_m_no}
+
+    </select>
+    
+</mapper>

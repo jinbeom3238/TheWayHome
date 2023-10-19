@@ -1,0 +1,124 @@
+<script th:fragment="js" th:inline="javascript" type="text/javascript">
+
+    $(document).ready(function () {
+        console.log("DOCUMENT READY!!");
+
+        init_events();
+
+    });
+
+    function init_events() {
+        // 관리자 승인 처리
+        $(document).on('click', '#search_admin_list tbody td.btn_approval', function (e) {
+            console.log("btn_approval CLICK HANDLER");
+
+            var result = confirm('상태를 변경하시겠습니까?')
+
+            if(result) {
+                let no = $(this).parent().attr('id');
+                ajax_approval_confirm(no);
+
+            } else {
+                alert("취소되었습니다.");
+            }
+
+        });
+
+        //정보수정
+        $(document).on('click', '#section_wrap input[value="회원정보 수정"]', function (e) {
+            console.log('button CLICK HANDLER!!');
+
+            let form = document.member_modify_form;
+            if (form.a_m_pw.value == '') {
+                alert('비밀번호를 입력해주세요.');
+                form.a_m_pw.focus();
+
+            } else {
+                let a_m_no = $('#section_wrap input[name="a_m_no"]').val();
+                let a_m_id = $('#section_wrap input[name="a_m_id"]').val();
+                let a_m_pw = $('#section_wrap input[name="a_m_pw"]').val();
+
+                ajax_modify_confirm(a_m_no, a_m_id, a_m_pw);
+            }
+        });
+    }
+
+    /*
+     * AJAX START
+     */
+    //회원정보 수정
+    function ajax_modify_confirm(a_m_no, a_m_id, a_m_pw) {
+        console.log('ajax_modify_confirm() CALLED!!');
+
+        console.log("----------->", a_m_no, a_m_id, a_m_pw);
+
+        let msgDto = {
+            'a_m_no': a_m_no,
+            'a_m_id': a_m_id,
+            'a_m_pw': a_m_pw,
+        };
+
+        $.ajax({
+            url: '/admin/member/member_modify_confirm',
+            type: 'POST',
+            data: JSON.stringify(msgDto),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (data) {
+                console.log('AJAX SUCCESS - ajax_login_confirm()');
+                alert('성공');
+
+                location.href = "/admin"
+
+            },
+            error: function (data) {
+                console.log('AJAX ERROR - ajax_login_confirm()');
+                alert('실패');
+
+                location.href = "/admin/member/member_modify_form"
+
+            }
+        });
+    }
+
+
+    //관리자 승인 처리 ajax
+        function ajax_approval_confirm(a_m_no) {
+            console.log('ajax_approval_confirm() CALLED!!');
+
+            let formdata = new FormData();
+            formdata.append("a_m_no", a_m_no);
+
+            $.ajax({
+                url: '/admin/member/member_approval_confirm',
+                method: 'POST',
+                processData: false,
+                contentType: false,
+                data: formdata,
+                success: function (data) {
+                    console.log('AJAX SUCCESS - ajax_approval_confirm()');
+                    if (data.result == 0) {
+                        $("#" + a_m_no + ' td.btn_approval a.approval').text("승인대기");
+                        $("#" + a_m_no + ' td.btn_approval div.approval')
+                            .css("background-color", "#6c757d")
+                            .css("color", "#6c757d");
+                    } else {
+                        $("#" + a_m_no + ' td.btn_approval a.approval').text("승인완료");
+                        $("#" + a_m_no + ' td.btn_approval div.approval')
+                            .css("background-color", "#28a745")
+                            .css("color", "#fff");
+                    }
+                },
+                error: function (data) {
+                    console.log('AJAX ERROR - ajax_approval_confirm()');
+                    alert('문제가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+
+
+    }
+    /*
+     * AJAX END
+     */
+
+</script>

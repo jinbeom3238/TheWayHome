@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.btc.thewayhome.admin.pets.user.IPetsUserDaoMapper">
+
+    <!--보호소 리스트-->
+<!--    <select id="selectShelter"-->
+<!--            resultType="com.btc.thewayhome.admin.pets.user.UserShelterListInfoDto">-->
+<!--        SELECT-->
+<!--            n.s_no,-->
+<!--            n.s_name,-->
+<!--            i.s_address,-->
+<!--            i.s_phone,-->
+<!--            i.s_reg_date-->
+<!--        FROM-->
+<!--                tbl_shelter_num n-->
+<!--            INNER JOIN-->
+<!--                tbl_shelter_info i-->
+<!--            ON-->
+<!--                n.s_name = i.s_name-->
+<!--        ORDER BY-->
+<!--            s_no ASC-->
+<!--    </select>-->
+
+    <!--보호소 리스트-->
+    <!--<select id="selectShelter"
+            resultType="com.btc.thewayhome.admin.pets.user.UserShelterListInfoDto">
+        <choose>
+            <when test="searchInput == null or searchInput.equals('')">
+                SELECT
+                    n.s_no,
+                    n.s_name,
+                    i.s_address,
+                    i.s_phone,
+                    i.s_reg_date
+                FROM
+                        tbl_shelter_num n
+                    INNER JOIN
+                        tbl_shelter_info i
+                    ON
+                        n.s_name = i.s_name
+                ORDER BY
+                    s_no ASC
+            </when>
+            <otherwise>
+                <choose>
+                    <when test="searchOption eq '0'.toString()">
+                        SELECT
+                            n.s_no,
+                            n.s_name,
+                            i.s_address,
+                            i.s_phone,
+                            i.s_reg_date
+                        FROM
+                            tbl_shelter_num n
+                        INNER JOIN
+                            tbl_shelter_info i
+                        ON
+                            n.s_name = i.s_name
+                        WHERE
+                            n.s_name like concat('%', #{searchInput}  ,'%')
+                        ORDER BY
+                            s_no ASC
+                    </when>
+                    <otherwise>
+                        SELECT
+                            n.s_no,
+                            n.s_name,
+                            i.s_address,
+                            i.s_phone,
+                            i.s_reg_date
+                        FROM
+                            tbl_shelter_num n
+                        INNER JOIN
+                            tbl_shelter_info i
+                        ON
+                            n.s_name = i.s_name
+                        WHERE
+                            i.s_address like concat('%', #{searchInput} ,'%')
+                        ORDER BY
+                            s_no ASC
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>-->
+
+
+    <!-- 보호소 리스트 -->
+    <select id="selectShelter"
+            resultType="com.btc.thewayhome.admin.pets.user.UserShelterListInfoDto">
+        <choose>
+            <when test="searchInput == null or searchInput.equals('')">
+                SELECT
+                    s_no,
+                    s_name,
+                    s_address,
+                    s_phone,
+                    a_m_reg_date
+                FROM
+                    tbl_member_admin
+                where
+                    a_m_approval = '1'
+                ORDER BY
+                    s_name ASC
+            </when>
+            <otherwise>
+                <choose>
+                    <when test="searchOption eq '0'.toString()">
+                        SELECT
+                            s_no,
+                            s_name,
+                            s_address,
+                            s_phone,
+                            a_m_reg_date
+                        FROM
+                            tbl_member_admin
+                        WHERE
+                            s_name like concat('%', #{searchInput}  ,'%')
+                        AND
+                            a_m_approval = '1'
+                        ORDER BY
+                            s_name ASC
+                    </when>
+                    <otherwise>
+                        SELECT
+                            s_no,
+                            s_name,
+                            s_address,
+                            s_phone,
+                            a_m_reg_date
+                        FROM
+                            tbl_member_admin
+                        WHERE
+                            s_address like concat('%', #{searchInput}  ,'%')
+                        AND
+                            a_m_approval = '1'
+                        ORDER BY
+                            s_name ASC
+                    </otherwise>
+                </choose>
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--보호 동물 리스트(보호소 리스트 상세 페이지)-->
+    <select id="selectPets"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.pets.user.UserPetsListInfoDto">
+        <choose>
+        <when test="searchInput == null or searchInput.equals('')">
+        SELECT
+            a.an_no,
+            a.use_yn,
+            a.an_thumbnail,
+            sn.s_no,
+            a.s_name,
+            a.an_an_kind,
+            a.an_k_kind,
+            a.an_n_start,
+            a.an_n_end,
+            a.an_p_s_state
+        FROM tbl_animal_api AS a
+            JOIN
+                tbl_shelter_num AS sn
+            ON
+                a.s_name = sn.s_name
+        WHERE
+            sn.s_no = #{s_no}
+            AND
+                a.use_yn='Y'
+        </when>
+        <otherwise>
+            <choose>
+                <when test="searchOption eq '0'.toString()">
+                    SELECT
+                        *
+                    FROM
+                        tbl_animal_api a
+                        JOIN
+                            tbl_shelter_num sn
+                        ON
+                            a.s_name = sn.s_name
+                    WHERE
+                        a.an_an_kind like concat('%',#{searchInput},'%') AND a.use_yn='Y'
+                        AND
+                            sn.s_no = #{s_no}
+                        AND
+                            a.use_yn='Y'
+                </when>
+                <otherwise>
+                    SELECT
+                        *
+                    FROM
+                        tbl_animal_api a
+                        JOIN
+                            tbl_shelter_num sn
+                        ON
+                            a.s_name = sn.s_name
+                    WHERE
+                        a.an_k_kind like concat('%',#{searchInput},'%') AND a.use_yn='Y'
+                        AND
+                            sn.s_no = #{s_no}
+                        AND
+                            a.use_yn='Y'
+                </otherwise>
+            </choose>
+        </otherwise>
+        </choose>
+    </select>
+
+    <!--보호 동물 리스트(보호소 리스트 상세 페이지xx)-->
+    <select id="selectAllPets"
+            parameterType="com.btc.thewayhome.admin.pets.user.UserPetsListInfoDto"
+            resultType="com.btc.thewayhome.admin.pets.user.UserPetsListInfoDto">
+
+        SELECT
+            a.an_no,
+            a.use_yn,
+            a.an_thumbnail,
+            a.an_an_kind,
+            sn.s_no,
+            a.s_name,
+            a.an_k_kind,
+            a.an_n_start,
+            a.an_n_end,
+            a.an_p_s_state
+        FROM tbl_animal_api AS a
+                 JOIN
+             tbl_shelter_num AS sn
+             ON
+                 a.s_name = sn.s_name
+        where
+            a.use_yn = 'Y'
+    </select>
+
+    <!-- 보호 동물 상세 페이지 -->
+    <select id="selectPetsListDetail"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.pets.user.PetsUserDto">
+        SELECT
+            an_no,
+            an_image,
+            use_yn,
+            an_g_gender,
+            an_an_kind,
+            an_color,
+            an_age,
+            an_weight,
+            an_k_kind,
+            an_n_start,
+            an_n_end,
+            an_happen_place,
+            an_special_mark,
+            s_name
+        FROM
+            tbl_animal_api
+        WHERE
+            an_no = #{an_no}
+          AND
+            use_yn='Y'
+    </select>
+
+    <!-- 보호소 정보 상세 페이지 -->
+    <select id="selectShelterDetail"
+            parameterType="String"
+            resultType="com.btc.thewayhome.admin.pets.user.PetsUserDto">
+        SELECT s_name,
+               s_phone,
+               s_address,
+               s_reg_date
+        FROM
+            tbl_shelter_info
+        where
+            s_name = #{s_name}
+    </select>
+
+</mapper>
